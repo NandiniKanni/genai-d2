@@ -1,29 +1,27 @@
 import streamlit as st
-import requests
 from PIL import Image
 from io import BytesIO
+import openai
 
-st.title("🖼️ Text-to-Image (HF Router API)")
+st.title("🖼️ Text to Image using OpenAI DALL·E")
 
-prompt = st.text_input("Enter your prompt here:")
+prompt = st.text_input("Enter prompt:")
+
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 if st.button("Generate"):
     if prompt.strip() == "":
-        st.error("Please type a prompt!")
+        st.error("Please enter a prompt!")
     else:
-        api_url = "https://router.huggingface.co/api/runwayml/stable-diffusion-v1-5"
-        headers = {"Authorization": f"Bearer {st.secrets['hf_token']}"}
+        with st.spinner("Generating..."):
+            response = openai.Image.create(
+                prompt=prompt,
+                n=1,
+                size="1024x1024"
+            )
 
-        payload = {"inputs": prompt}
+            image_url = response['data'][0]['url']
+            st.image(image_url, caption="Generated Image", use_column_width=True)
 
-        with st.spinner("Generating image..."):
-            response = requests.post(api_url, headers=headers, json=payload)
-
-            if response.status_code == 200:
-                image = Image.open(BytesIO(response.content))
-                st.image(image, caption="Generated Image", use_column_width=True)
-            else:
-                st.error("Error generating image.")
-                st.write(response.status_code, response.text)
 
 
