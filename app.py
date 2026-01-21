@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 st.set_page_config(page_title="Image Generator", layout="wide")
-st.title("🖼️ Pollinations Image Generator")
+st.title("🖼️ Nandini's Image Generator")
 
 prompt = st.text_input("Enter your prompt", "")
 
