@@ -14,11 +14,11 @@ if st.button("Generate"):
         st.error("Please enter a prompt!")
     else:
         with st.spinner("Generating..."):
-            response = openai.Image.create(
-                prompt=prompt,
-                n=1,
-                size="1024x1024"
-            )
+            response = openai.images.generate(
+    model="gpt-image-1",
+    prompt=prompt,
+    size="1024x1024"
+    )
 
             image_url = response['data'][0]['url']
             st.image(image_url, caption="Generated Image", use_column_width=True)
