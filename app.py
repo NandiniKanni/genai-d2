@@ -1,16 +1,23 @@
-import openai
 import streamlit as st
+import requests
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+st.set_page_config(page_title="Image Generator", layout="wide")
+st.title("🖼️ Pollinations Image Generator")
 
-prompt = st.text_input("Enter prompt")
+prompt = st.text_input("Enter your prompt", "")
 
-if st.button("Generate"):
-    response = openai.images.generate(
-        model="gpt-image-1",
-        prompt=prompt,
-        size="1024x1024"
-    )
+if st.button("Generate Image"):
+    if prompt.strip() == "":
+        st.error("Please enter a prompt")
+    else:
+        # Pollinations API URL
+        url = "https://image.pollinations.ai/prompt/" + prompt
 
-    image_url = response.data[0].url
-    st.image(image_url)
+        # Request the image
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            st.image(response.content, use_column_width=True)
+        else:
+            st.error("Error generating image. Try again!")
+
